@@ -38,4 +38,12 @@ python scripts/research_pack.py --rank 1          # 순위 지정 → 기사 본
 python scripts/check_factsheet.py data/research/<폴더>   # 출처·인용 원문·'확인' 기준 검증
 ```
 - `scripts/article_text.py`: 언론사 기사 본문 추출 (JTBC는 페이지 내 JSON에서 추출)
+## 4단계: 카피 (republican-short 규격)
+```
+# Claude Code가 prompts/copywriter.md 규칙대로 같은 폴더에 copy.json 작성
+python scripts/check_copy.py data/research/<폴더>
+```
+검증: 본문 450~550자·제목 3·해시태그 20·표지 3안(실제 글자 폭)·카드 블록 3 / 큰따옴표 인용 원문 대조 / 숫자는 팩트시트에 있어야 함 / cautions 대응 / 이전 글과 전환·마무리 반복
+
+## 참고
 - 조선일보는 본문이 스크립트로 로드돼 요약만, 한겨레·중앙일보는 Google 뉴스 링크라 본문 미수집(제목만)
