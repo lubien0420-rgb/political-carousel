@@ -53,5 +53,31 @@ python scripts/review.py data/research/<폴더> --validate   # 판정 확인: �
 ```
 판정: 치명 → 게시 불가 / 중요 → 수정 필요(카피로 되돌려 재검수, review_rN.json 보관) / 경미만 → 통과
 
+## 6단계: 승인 (사람)
+```
+python scripts/approve.py data/research/<폴더>                                 # 승인 패키지 미리보기
+python scripts/approve.py data/research/<폴더> --title 2 --cover 1 --ack-notes  # 승인 (사용자가 직접)
+python scripts/approve.py data/research/<폴더> --reject "사유"                  # 반려
+python scripts/approve.py data/research/<폴더> --check                         # 유효성 (다음 단계가 사용)
+```
+승인은 copy/factsheet/review 파일 해시에 묶임 → 승인 뒤 수정하면 자동 무효.
+
+## 7단계: 디자이너
+```
+python scripts/design.py data/research/<폴더>                  # 승인본 → design/carousel_politics_1x1.html
+python scripts/design.py data/research/<폴더> --draft --cover 2 # 승인 전 레이아웃 시안 (업로드 불가)
+```
+템플릿: templates/carousel_politics_1x1.html (republican-short, 1080×1080 2장)
+
+## 8단계: 사진 삽입 (수동)
+HTML을 브라우저로 열기 → 카드 1·2 배경 사진 업로드 → '전체 2장 다운로드' → slide1.png, slide2.png 를 `<폴더>/final/` 에 넣기
+
+## 9단계: 업로드 + 로그
+```
+python scripts/upload.py data/research/<폴더> --dry-run   # 변환·점검만
+python scripts/upload.py data/research/<폴더>             # JPEG 변환 → docs/posts/<id>/ push → Pages 대기 → 게시
+```
+승인 유효 + final 이미지 2장 + 미게시(published.json 없음)일 때만 진행. 결과는 `<폴더>/published.json`, 모든 시도는 `logs/posts.jsonl`.
+
 ## 참고
 - 조선일보는 본문이 스크립트로 로드돼 요약만, 한겨레·중앙일보는 Google 뉴스 링크라 본문 미수집(제목만)

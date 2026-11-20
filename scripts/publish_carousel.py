@@ -36,24 +36,13 @@ def wait_finished(container_id: str, label: str):
     raise ApiError(f"{label} 컨테이너 {container_id} 처리 시간 초과")
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("urls", nargs="+")
-    ap.add_argument("--caption", default="")
-    ap.add_argument("--dry-run", action="store_true")
-    a = ap.parse_args()
-    if not 2 <= len(a.urls) <= 20:
-        sys.exit("캐러셀은 2~20장이어야 합니다.")
-
-    print("[0] 이미지 URL 점검")
-    for u in a.urls:
-        check_url(u)
-    if a.dry_run:
-        return
-
+def publish(urls: list[str], caption: str) -> dict:
+    """캐러셀 게시 후 {media_id, permalink, media_type, timestamp} 반환. 실패 시 ApiError."""
+    if not 2 <= len(urls) <= 20:
+        raise ValueError("캐러셀은 2~20장이어야 합니다.")
     print("[1] 이미지별 컨테이너 생성")
     children = []
-    for i, u in enumerate(a.urls, 1):
+    for i, u in enumerate(urls, 1):
         cid = call("POST", f"{IG_USER_ID}/media", image_url=u, is_carousel_item="true")["id"]
         wait_finished(cid, f"아이템{i}")
         print(f"  아이템{i} 컨테이너 {cid} FINISHED")
@@ -61,7 +50,7 @@ def main():
 
     print("[2] 캐러셀 컨테이너 생성")
     carousel = call("POST", f"{IG_USER_ID}/media", media_type="CAROUSEL",
-                    children=",".join(children), caption=a.caption)["id"]
+                    children=",".join(children), caption=caption)["id"]
     wait_finished(carousel, "캐러셀")
     print(f"  캐러셀 컨테이너 {carousel} FINISHED")
 
@@ -71,6 +60,20 @@ def main():
 
     info = call("GET", media_id, fields="permalink,media_type,timestamp")
     print(f"[4] permalink={info.get('permalink')}  type={info.get('media_type')}  at={info.get('timestamp')}")
+    return {"media_id": media_id, **{k: info.get(k) for k in ("permalink", "media_type", "timestamp")}}
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("urls", nargs="+")
+    ap.add_argument("--caption", default="")
+    ap.add_argument("--dry-run", action="store_true")
+    a = ap.parse_args()
+    print("[0] 이미지 URL 점검")
+    for u in a.urls:
+        check_url(u)
+    if not a.dry_run:
+        publish(a.urls, a.caption)
 
 
 if __name__ == "__main__":
