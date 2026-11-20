@@ -67,7 +67,7 @@ python scripts/approve.py data/research/<폴더> --check                        
 python scripts/design.py data/research/<폴더>                  # 승인본 → design/carousel_politics_1x1.html
 python scripts/design.py data/research/<폴더> --draft --cover 2 # 승인 전 레이아웃 시안 (업로드 불가)
 ```
-템플릿: templates/carousel_politics_1x1.html (republican-short, 1080×1080 2장)
+템플릿 (`--style`): `tabloid`(기본, templates/carousel_tabloid_1x1.html — 사진 풀블리드 표지 + 외곽선 헤드라인 + 신문지 정리 카드) / `classic`(templates/carousel_politics_1x1.html — republican-short 원본). 둘 다 1080×1080 2장, 긴 문구는 자동으로 글자 크기 축소.
 
 ## 8단계: 사진 삽입 (수동)
 HTML을 브라우저로 열기 → 카드 1·2 배경 사진 업로드 → '전체 2장 다운로드' → slide1.png, slide2.png 를 `<폴더>/final/` 에 넣기

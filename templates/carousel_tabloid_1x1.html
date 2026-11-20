@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<title>정치 캐러셀 · 타블로이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --red:#E60012; --yellow:#FFE600; --ink:#111; --paper:#F3F0E8; }
+  body { background:#2a2a2a; font-family:'Noto Sans KR',sans-serif; display:flex; flex-direction:column; align-items:center; overflow-x:hidden; }
+  .draft-banner { width:100%; background:#7a1010; color:#fff; text-align:center; font-size:22px; font-weight:700; padding:10px; }
+  .panel { width:100%; background:#111; color:#ddd; padding:16px 32px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; position:sticky; top:0; z-index:100; font-size:18px; }
+  .panel label.btn, .panel button { border:2px solid #fff; background:transparent; color:#fff; padding:8px 16px; font:700 18px 'Noto Sans KR'; cursor:pointer; }
+  .panel button.primary { background:var(--yellow); color:#000; border-color:var(--yellow); }
+  .panel input[type=file] { display:none; }
+  .cards { display:flex; flex-direction:column; gap:40px; padding:40px 10px 80px; align-items:flex-start; }
+  .card { width:1080px; height:1080px; position:relative; overflow:hidden; flex-shrink:0; }
+
+  /* ---------- 카드 1: 표지 ---------- */
+  .c1 { background:#3a3a3a; }
+  .c1 .photo { position:absolute; inset:0; background:#4a4a4a center/cover no-repeat; }
+  .c1 .hint { position:absolute; top:32%; left:0; right:0; text-align:center; color:rgba(255,255,255,.35); font:700 34px 'Noto Sans KR'; }
+  .c1 .shade { position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,.25) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 38%, rgba(0,0,0,.88) 78%, rgba(0,0,0,.95) 100%); }
+  .c1 .tags { position:absolute; top:48px; left:48px; display:flex; gap:0; z-index:3; }
+  .c1 .tag { font-family:'Black Han Sans'; font-size:40px; line-height:1; padding:14px 22px 12px; }
+  .c1 .tag.red { background:var(--red); color:#fff; }
+  .c1 .tag.yel { background:var(--yellow); color:#000; }
+  .c1 .head { position:absolute; left:48px; right:48px; bottom:118px; z-index:3; }
+  .c1 .line { font-family:'Black Han Sans'; color:#fff; white-space:nowrap; line-height:1.12; letter-spacing:-2px;
+              text-shadow: 0 0 2px #000, 3px 3px 0 #000, -3px 3px 0 #000, 3px -3px 0 #000, -3px -3px 0 #000, 0 8px 18px rgba(0,0,0,.6); }
+  .c1 .l1 { font-size:92px; }
+  .c1 .l2 { font-size:132px; }
+  .c1 .em { color:var(--yellow); }
+  .c1 .handle { position:absolute; left:48px; bottom:48px; z-index:3; color:#fff; font:700 28px 'Noto Sans KR'; opacity:.85; }
+  .c1 .swipe { position:absolute; right:48px; bottom:44px; z-index:3; background:var(--red); color:#fff; font:900 28px 'Noto Sans KR'; padding:8px 18px; }
+
+  /* ---------- 카드 2: 정리 ---------- */
+  .c2 { background:var(--paper); display:flex; flex-direction:column; }
+  .c2 .top { position:relative; height:250px; background:#111 center/cover no-repeat; flex-shrink:0; }
+  .c2 .top .dim { position:absolute; inset:0; background:rgba(0,0,0,.72); }
+  .c2 .top .kicker { position:absolute; top:40px; left:56px; background:var(--red); color:#fff; font-family:'Black Han Sans'; font-size:30px; padding:8px 16px 6px; }
+  .c2 .top .title { position:absolute; left:56px; right:56px; bottom:34px; color:#fff; font-family:'Black Han Sans'; font-size:76px; line-height:1.05; letter-spacing:-2px; white-space:nowrap; }
+  .c2 .rows { padding:18px 56px 0; flex:1; display:flex; flex-direction:column; }
+  .c2 .row { display:flex; gap:26px; align-items:flex-start; padding:20px 0; border-bottom:3px solid var(--ink); }
+  .c2 .idx { font-family:'Black Han Sans'; font-size:54px; color:var(--red); line-height:1; width:70px; flex-shrink:0; padding-top:4px; }
+  .c2 .num { font-family:'Black Han Sans'; font-size:52px; color:var(--ink); line-height:1.1; letter-spacing:-1px; }
+  .c2 .num span { background:linear-gradient(transparent 58%, var(--yellow) 58%); padding:0 4px; }
+  .c2 .txt { font-size:28px; font-weight:700; color:#333; line-height:1.4; margin-top:6px; word-break:keep-all; }
+  .c2 .counter { margin-top:20px; display:flex; gap:18px; align-items:center; background:#fff; border:3px solid var(--ink); padding:16px 20px; }
+  .c2 .counter .who { background:var(--ink); color:#fff; font-family:'Black Han Sans'; font-size:28px; padding:8px 14px 6px; white-space:nowrap; flex-shrink:0; }
+  .c2 .counter .say { font-size:26px; font-weight:700; color:#222; line-height:1.4; word-break:keep-all; text-wrap:balance; }
+  .c2 .txt { text-wrap:balance; }
+  .c2 .claim { margin-top:auto; background:var(--red); color:#fff; font-family:'Black Han Sans'; font-size:70px; letter-spacing:-1.5px; text-align:center; padding:26px 30px 22px; white-space:nowrap; }
+  .c2 .foot { display:flex; justify-content:space-between; padding:14px 56px 22px; font-size:22px; font-weight:700; color:#666; }
+</style>
+</head>
+<body>
+{{DRAFT_BANNER}}
+<div class="panel">
+  <b style="color:#fff">{{HANDLE}}</b>
+  <label class="btn">표지 사진<input type="file" accept="image/*" onchange="setPhoto(this,'p1')"></label>
+  <label class="btn">카드2 사진<input type="file" accept="image/*" onchange="setPhoto(this,'p2')"></label>
+  <span>표지 어둡게 <input type="range" min="0" max="60" value="0" oninput="document.getElementById('shadeExtra').style.background='rgba(0,0,0,'+this.value/100+')'"></span>
+  <span style="margin-left:auto;display:flex;gap:10px">
+    <button onclick="dl(1)">표지 PNG</button><button onclick="dl(2)">카드2 PNG</button><button class="primary" onclick="dlAll()">전체 2장 다운로드</button>
+  </span>
+</div>
+
+<div class="cards">
+  <div class="card c1">
+    <div class="photo" id="p1"></div>
+    <div class="hint" id="hint1">표지 사진을 넣어 주세요 (인물 얼굴이 위쪽에 오게)</div>
+    <div class="shade"></div><div id="shadeExtra" style="position:absolute;inset:0"></div>
+    <div class="tags"><div class="tag red">{{TAG}}</div><div class="tag yel">{{DATE}}</div></div>
+    <div class="head">
+      <div class="line l1 fit">{{COVER_LINE1}}</div>
+      <div class="line l2 fit">{{COVER_LINE2_BEFORE}}<span class="em">{{COVER_EM}}</span>{{COVER_LINE2_AFTER}}</div>
+    </div>
+    <div class="handle">{{HANDLE}}</div>
+    <div class="swipe">넘겨서 팩트 확인 ▶</div>
+  </div>
+
+  <div class="card c2">
+    <div class="top" id="p2"><div class="dim"></div><div class="kicker">팩트 정리</div><div class="title fit">{{S2_TITLE}}</div></div>
+    <div class="rows">
+{{BLOCKS}}
+      <div class="counter"><div class="who">{{COUNTER_LABEL}}</div><div class="say">{{COUNTER_TEXT}}</div></div>
+    </div>
+    <div class="claim fit">{{CLAIM}}</div>
+    <div class="foot"><span>관련 보도 기반 개인 논평</span><span>{{HANDLE}}</span></div>
+  </div>
+</div>
+<!--BLOCK_START
+      <div class="row"><div class="idx">{idx}</div><div><div class="num"><span>{num}</span></div><div class="txt">{text}</div></div></div>
+BLOCK_END-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// 한 줄 문구가 카드 폭을 넘으면 글자 크기를 줄여 맞춘다
+function fitAll() {
+  document.querySelectorAll('.fit').forEach(el => {
+    el.style.fontSize = '';
+    // nowrap 블록: 글자가 안쪽 폭(패딩 포함)을 넘으면 scrollWidth > clientWidth
+    let size = parseFloat(getComputedStyle(el).fontSize);
+    while (el.scrollWidth > el.clientWidth && size > 30) { size -= 2; el.style.fontSize = size + 'px'; }
+  });
+}
+function setPhoto(input, id) {
+  const f = input.files[0]; if (!f) return;
+  const el = document.getElementById(id);
+  el.style.backgroundImage = `url('${URL.createObjectURL(f)}')`;
+  if (id === 'p1') document.getElementById('hint1').style.display = 'none';
+}
+async function dl(n) {
+  const card = document.querySelectorAll('.card')[n - 1];
+  const prev = card.style.transform; card.style.transform = '';
+  const canvas = await html2canvas(card, { width:1080, height:1080, scale:2, useCORS:true, allowTaint:true, backgroundColor:null, logging:false,
+    onclone: d => { const h = d.getElementById('hint1'); if (h) h.style.display = 'none'; } });
+  card.style.transform = prev;
+  const a = document.createElement('a'); a.download = 'slide' + n + '.png'; a.href = canvas.toDataURL('image/png'); a.click();
+}
+async function dlAll() { await dl(1); await new Promise(r => setTimeout(r, 700)); await dl(2); }
+function scaleCards() {
+  const s = Math.min(1, (window.innerWidth - 20) / 1080);
+  document.querySelectorAll('.card').forEach(c => { c.style.transform = s < 1 ? `scale(${s})` : ''; c.style.transformOrigin = 'top left';
+    c.style.marginRight = s < 1 ? `-${1080 * (1 - s)}px` : ''; c.style.marginBottom = s < 1 ? `-${1080 * (1 - s)}px` : ''; });
+}
+document.fonts.ready.then(() => { fitAll(); scaleCards(); });
+window.addEventListener('resize', scaleCards);
+</script>
+</body>
+</html>
