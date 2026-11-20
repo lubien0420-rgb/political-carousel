@@ -45,5 +45,13 @@ python scripts/check_copy.py data/research/<폴더>
 ```
 검증: 본문 450~550자·제목 3·해시태그 20·표지 3안(실제 글자 폭)·카드 블록 3 / 큰따옴표 인용 원문 대조 / 숫자는 팩트시트에 있어야 함 / cautions 대응 / 이전 글과 전환·마무리 반복
 
+## 5단계: 검수
+```
+python scripts/review.py data/research/<폴더>              # 기계 검증 + 위험 표현 점검 → review_input.md
+# 검수자가 prompts/reviewer.md 체크리스트대로 review.json 작성 (문장별 근거 매핑 + 지적 + 판정)
+python scripts/review.py data/research/<폴더> --validate   # 판정 확인: 통과일 때만 종료코드 0
+```
+판정: 치명 → 게시 불가 / 중요 → 수정 필요(카피로 되돌려 재검수, review_rN.json 보관) / 경미만 → 통과
+
 ## 참고
 - 조선일보는 본문이 스크립트로 로드돼 요약만, 한겨레·중앙일보는 Google 뉴스 링크라 본문 미수집(제목만)
