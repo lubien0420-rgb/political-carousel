@@ -30,3 +30,12 @@ python scripts/collect.py                 # 최근 12시간, 상위 15개
 python scripts/collect.py --hours 24 --top 20
 ```
 여러 언론사가 함께 다룬 이슈일수록 순위가 높다 (점수 = 언론사 수×10 + 기사 수×2 − 경과 시간).
+
+## 3단계: 팩트 리서처
+```
+python scripts/research_pack.py --rank 1          # 순위 지정 → 기사 본문 묶음 (data/research/<폴더>/pack.md)
+# Claude Code가 prompts/fact_researcher.md 규칙대로 같은 폴더에 factsheet.json 작성
+python scripts/check_factsheet.py data/research/<폴더>   # 출처·인용 원문·'확인' 기준 검증
+```
+- `scripts/article_text.py`: 언론사 기사 본문 추출 (JTBC는 페이지 내 JSON에서 추출)
+- 조선일보는 본문이 스크립트로 로드돼 요약만, 한겨레·중앙일보는 Google 뉴스 링크라 본문 미수집(제목만)
