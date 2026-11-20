@@ -1,0 +1,20 @@
+{
+  "_comment": "정치 섹션 RSS. via=google 은 언론사 RSS가 막혀 있어 Google 뉴스 site 검색 RSS로 대체한 것.",
+  "user_agent": "Mozilla/5.0 (political-carousel rss collector)",
+  "feeds": [
+    {"name": "연합뉴스", "url": "https://www.yna.co.kr/rss/politics.xml"},
+    {"name": "뉴시스", "url": "https://newsis.com/RSS/politics.xml"},
+    {"name": "조선일보", "url": "https://www.chosun.com/arc/outboundfeeds/rss/category/politics/?outputType=xml"},
+    {"name": "동아일보", "url": "https://rss.donga.com/politics.xml"},
+    {"name": "중앙일보", "url": "https://news.google.com/rss/search?q=site:joongang.co.kr+%EC%A0%95%EC%B9%98+when:1d&hl=ko&gl=KR&ceid=KR:ko", "via": "google"},
+    {"name": "한겨레", "url": "https://news.google.com/rss/search?q=site:hani.co.kr+%EC%A0%95%EC%B9%98+when:1d&hl=ko&gl=KR&ceid=KR:ko", "via": "google"},
+    {"name": "경향신문", "url": "https://www.khan.co.kr/rss/rssdata/politic_news.xml"},
+    {"name": "매일경제", "url": "https://www.mk.co.kr/rss/30200030/"},
+    {"name": "한국경제", "url": "https://www.hankyung.com/feed/politics"},
+    {"name": "세계일보", "url": "https://www.segye.com/Articles/RSSList/segye_politic.xml"},
+    {"name": "국민일보", "url": "https://www.kmib.co.kr/rss/data/kmibPolRss.xml"},
+    {"name": "서울신문", "url": "https://www.seoul.co.kr/xml/rss/rss_politics.xml"},
+    {"name": "SBS", "url": "https://news.sbs.co.kr/news/SectionRssFeed.do?sectionId=01"},
+    {"name": "JTBC", "url": "https://news-ex.jtbc.co.kr/v1/get/rss/section/politics"}
+  ]
+}
